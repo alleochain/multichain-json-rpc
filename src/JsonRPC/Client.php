@@ -9,7 +9,7 @@
  * @copyright     Copyright (c) Alexander Mamchenkov. (http://alex.mamchenkov.net)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace Multichain\JsonRPC;
+namespace AlexMamchenkov\Multichain\JsonRPC;
 
 use GuzzleHttp\Client as HttpClient;
 
@@ -26,7 +26,7 @@ use GuzzleHttp\Client as HttpClient;
  * Example usage:
  *
  * # Create new instance
- * $instance = new Multichain\JsonRPC\Client([
+ * $instance = new AlexMamchenkov\Multichain\JsonRPC\Client([
  *   'url'  => 'http://127.0.0.1:7208',
  *   'user'  => 'rpcuser',
  *   'pass'  => 'rpcpass',
@@ -130,7 +130,7 @@ class Client
 
             // try to see if we actually managed to do a request and got response with
             // some JSON in it
-            if (preg_match('/^.*?({.*})$/s', trim($e->getMessag()), $matches)) {
+            if (preg_match('/^.*?({.*})$/s', trim($e->getMessage()), $matches)) {
 
                 // just return decoded JSON part which should have error
                 // message in it

@@ -1,12 +1,28 @@
 {
+    "name": "alex-mamchenkov/multichain-jsonrpc",
     "description": "Multichain JSON-RPC Client",
+    "type": "library",
+    "keywords": ["jsonrpc", "blockchain"],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexander Mamchenkov",
+            "email": "mamtchenkov@gmail.com",
+            "homepage": "http://alex.mamchenkov.net",
+            "role": "author"
+        }
+    ],
+    "support": {
+        "issues": "https://bitbucket.org/alexander_mamchenkov/multichain-jsonrpc/issues",
+        "source": "https://bitbucket.org/alexander_mamchenkov/multichain-jsonrpc/src"
+    },
     "require": {
+        "php": ">=7.0",
         "guzzlehttp/guzzle": "~6.0"
     },
     "autoload": {
         "psr-4": {
-            "Multichain\\": "src"
+            "AlexMamchenkov\\Multichain\\": "src"
         }
     }
 }

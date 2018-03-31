@@ -21,7 +21,7 @@ Usage Example
 
 ```php
 # Create new instance
-$instance = new Multichain\JsonRPC\Client([
+$instance = new AlexMamchenkov\Multichain\JsonRPC\Client([
     'url'  => 'http://127.0.0.1:7208',
     'user'  => 'rpcuser',
     'pass'  => 'rpcpass',
@@ -32,6 +32,6 @@ $instance = new Multichain\JsonRPC\Client([
 print_r($instance->getinfo());
 
 # For MultiChain streams
-print_r($instance->liststreamitems('test_stream'))
+print_r($instance->liststreamitems('test_stream'));
 ```
 
