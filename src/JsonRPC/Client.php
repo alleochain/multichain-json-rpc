@@ -125,16 +125,12 @@ class Client
 
         } catch (\Exception $e) {
 
-            // In some cases (like 404, 500), server will return JSON with error messages,
-            // but GuzzleHttp will wrap it into their own error message.
+            // Try to parse JSON from the response with error
+            $body = json_decode($e->getResponse()->getBody(true), true);
 
-            // try to see if we actually managed to do a request and got response with
-            // some JSON in it
-            if (preg_match('/^.*?({.*})$/s', trim($e->getMessage()), $matches)) {
-
-                // just return decoded JSON part which should have error
-                // message in it
-                return json_decode($matches[1], true);
+            // just return JSON if managed to parse correctly
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $body;
             }
 
             // otherwise throw the exception we have as it is probably Client/configuration
