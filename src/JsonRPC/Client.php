@@ -45,7 +45,7 @@ use GuzzleHttp\Client as HttpClient;
 class Client
 {
     /**
-     * @var array $config Client configuration
+     * @var mixed[] $config Client configuration
      */
     protected $config = [
         'url' => null,
@@ -55,23 +55,23 @@ class Client
     ];
 
     /**
-     * @var array $prohibitedMethods List of RPC calls that are not allowed
-     *
      * We don't really need help and stop is critical
+     *
+     * @var string[] $prohibitedMethods List of RPC calls that are not allowed
      */
     protected $prohibitedMethods = ['help', 'stop'];
 
     /**
-     * GuzzleHttp\Client $httpClient Instance of HTTP Client
+     * @var \GuzzleHttp\Client $httpClient Instance of HTTP Client
      */
-    protected $httpClient = null;
+    protected $httpClient;
 
     /**
      * Class constructor
      *
-     * @params array $config Initial config
+     * @param mixed[] $config Initial config
      */
-    public function __construct($config = [])
+    public function __construct(array $config = [])
     {
         if (empty($config['url'])) {
             throw new \RuntimeException("Missing required config param 'url'");
@@ -87,23 +87,19 @@ class Client
     /**
      * Exec API method with given params
      *
-     * @params string $method API method name
-     * @params array $params API method call params
+     * @param string $method API method name
+     * @param mixed[] $params API method call params
      *
-     * @return array parsed response body
+     * @return mixed[] parsed response body
      */
-    public function exec($method, $params = [])
+    public function exec(string $method, array $params = []): array
     {
         // non-empty method required
-        if (empty($method) || !is_string($method)) {
+        if (empty($method)) {
             throw new \InvalidArgumentException("Method name must be a non empty string");
         }
-        // params must be an array
-        if (!is_array($params)) {
-            throw new \InvalidArgumentException("Params must be an array");
-        }
         // prevent calling prohibited method
-        if (in_array($method, $this->prohibitedMethods)) {
+        if (in_array($method, $this->prohibitedMethods, true)) {
             throw new \RuntimeException("Method '$method' is not allowed by API");
         }
 
@@ -124,12 +120,14 @@ class Client
             // try to make a request to API
             $response = $this->httpClient->post($this->config['url'], ['json' => $payload]);
         } catch (\Exception $e) {
-            // Try to parse JSON from the response with error
-            $body = json_decode($e->getResponse()->getBody(true), true);
+            if (is_callable([$e, 'getResponse'])) {
+                // Try to parse JSON from the response with error
+                $body = json_decode($e->getResponse()->getBody(true), true);
 
-            // just return JSON if managed to parse correctly
-            if (json_last_error() === JSON_ERROR_NONE) {
-                return $body;
+                // just return JSON if managed to parse correctly
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    return $body;
+                }
             }
 
             // otherwise throw the exception we have as it is probably Client/configuration
@@ -138,7 +136,7 @@ class Client
         }
 
         // under normal execution return decoded JSON body as an array
-        return json_decode((string) $response->getBody(), true);
+        return json_decode((string)$response->getBody(), true);
     }
 
     /**
@@ -146,11 +144,11 @@ class Client
      * by their names
      *
      * @param string $method Method name that was called
-     * @param array $args Arguments passed to the method
+     * @param mixed[] $args Arguments passed to the method
      *
-     * @return array parsed response body
+     * @return mixed[] parsed response body
      */
-    public function __call($method, $args)
+    public function __call(string $method, array $args): array
     {
         return $this->exec($method, $args);
     }
