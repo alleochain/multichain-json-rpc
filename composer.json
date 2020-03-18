@@ -1,5 +1,5 @@
 {
-    "name": "alex-mamchenkov/multichain-jsonrpc",
+    "name": "alleochain/multichain-jsonrpc",
     "description": "Multichain JSON-RPC Client",
     "type": "library",
     "keywords": ["jsonrpc", "blockchain"],
