@@ -20,6 +20,9 @@
         "php": ">=7.0",
         "guzzlehttp/guzzle": "~6.0"
     },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "*"
+    },
     "autoload": {
         "psr-4": {
             "AlexMamchenkov\\Multichain\\": "src"

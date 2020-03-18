@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) Alexander Mamchenkov. (http://alex.mamchenkov.net)
  *
@@ -9,6 +10,7 @@
  * @copyright     Copyright (c) Alexander Mamchenkov. (http://alex.mamchenkov.net)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace AlexMamchenkov\Multichain\JsonRPC;
 
 use GuzzleHttp\Client as HttpClient;
@@ -46,10 +48,10 @@ class Client
      * @var array $config Client configuration
      */
     protected $config = [
-        'url' => NULL,
-        'user' => NULL,
-        'pass' => NULL,
-        'chain' => NULL
+        'url' => null,
+        'user' => null,
+        'pass' => null,
+        'chain' => null
     ];
 
     /**
@@ -59,10 +61,10 @@ class Client
      */
     protected $prohibitedMethods = ['help', 'stop'];
 
-	/**
-	 * GuzzleHttp\Client $httpClient Instance of HTTP Client
-	 */
-	protected $httpClient = null;
+    /**
+     * GuzzleHttp\Client $httpClient Instance of HTTP Client
+     */
+    protected $httpClient = null;
 
     /**
      * Class constructor
@@ -70,16 +72,16 @@ class Client
      * @params array $config Initial config
      */
     public function __construct($config = [])
-	{
-		if (empty($config['url'])) {
-			throw new \RuntimeException("Missing required config param 'url'");
-		}
+    {
+        if (empty($config['url'])) {
+            throw new \RuntimeException("Missing required config param 'url'");
+        }
 
-		$this->config = array_merge($this->config, $config);
+        $this->config = array_merge($this->config, $config);
 
-		$this->httpClient = new HttpClient([
-			'auth' => ((!empty($config['user']) && !empty($config['pass'])) ? [$config['user'], $config['pass']] : [])
-		]);
+        $this->httpClient = new HttpClient([
+            'auth' => ((!empty($config['user']) && !empty($config['pass'])) ? [$config['user'], $config['pass']] : [])
+        ]);
     }
 
     /**
@@ -119,12 +121,9 @@ class Client
         }
 
         try {
-
             // try to make a request to API
             $response = $this->httpClient->post($this->config['url'], ['json' => $payload]);
-
         } catch (\Exception $e) {
-
             // Try to parse JSON from the response with error
             $body = json_decode($e->getResponse()->getBody(true), true);
 
@@ -139,7 +138,7 @@ class Client
         }
 
         // under normal execution return decoded JSON body as an array
-		return json_decode((string) $response->getBody(), true);
+        return json_decode((string) $response->getBody(), true);
     }
 
     /**
@@ -151,7 +150,7 @@ class Client
      *
      * @return array parsed response body
      */
-    function __call($method, $args)
+    public function __call($method, $args)
     {
         return $this->exec($method, $args);
     }
