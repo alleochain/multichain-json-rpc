@@ -4,6 +4,9 @@
     "type": "library",
     "keywords": ["jsonrpc", "blockchain"],
     "license": "MIT",
+    "config": {
+        "sort-packages": true
+    },
     "authors": [
         {
             "name": "Alexander Mamchenkov",
@@ -21,11 +24,21 @@
         "guzzlehttp/guzzle": "~6.0"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "*"
+        "phpstan/extension-installer": "*",
+        "phpstan/phpstan": "*",
+        "squizlabs/php_codesniffer": "*",
+        "thecodingmachine/phpstan-strict-rules": "*"
     },
     "autoload": {
         "psr-4": {
             "AlexMamchenkov\\Multichain\\": "src"
+        }
+    },
+    "extra": {
+        "phpstan": {
+            "includes": [
+                "extension.neon"
+            ]
         }
     }
 }
