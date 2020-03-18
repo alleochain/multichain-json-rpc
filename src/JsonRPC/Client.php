@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Copyright (c) Alexander Mamchenkov. (http://alex.mamchenkov.net)
+ * Copyright (c) AlleoChain Ltd. (https://alleochain.com)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Alexander Mamchenkov. (http://alex.mamchenkov.net)
+ * @copyright     Copyright (c) AlleoChain Ltd. (https://alleochain.com)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
