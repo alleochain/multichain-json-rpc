@@ -4,6 +4,9 @@
     "type": "library",
     "keywords": ["jsonrpc", "blockchain"],
     "license": "MIT",
+    "config": {
+        "sort-packages": true
+    },
     "authors": [
         {
             "name": "Alexander Mamchenkov",
