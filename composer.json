@@ -1,5 +1,5 @@
 {
-    "name": "alex-mamchenkov/multichain-jsonrpc",
+    "name": "alleochain/multichain-jsonrpc",
     "description": "Multichain JSON-RPC Client",
     "type": "library",
     "keywords": ["jsonrpc", "blockchain"],
@@ -9,16 +9,11 @@
     },
     "authors": [
         {
-            "name": "Alexander Mamchenkov",
-            "email": "mamtchenkov@gmail.com",
-            "homepage": "http://alex.mamchenkov.net",
-            "role": "author"
+            "name": "AlleoChain Ltd",
+            "email": "hello@alleochain.com",
+            "homepage": "https://alleochain.com"
         }
     ],
-    "support": {
-        "issues": "https://bitbucket.org/alexander_mamchenkov/multichain-jsonrpc/issues",
-        "source": "https://bitbucket.org/alexander_mamchenkov/multichain-jsonrpc/src"
-    },
     "require": {
         "php": ">=7.0",
         "guzzlehttp/guzzle": "~6.0"
@@ -31,7 +26,7 @@
     },
     "autoload": {
         "psr-4": {
-            "AlexMamchenkov\\Multichain\\": "src"
+            "AlleoChain\\Multichain\\": "src"
         }
     },
     "extra": {

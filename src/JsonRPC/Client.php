@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Copyright (c) Alexander Mamchenkov. (http://alex.mamchenkov.net)
+ * Copyright (c) AlleoChain Ltd. (https://alleochain.com)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Alexander Mamchenkov. (http://alex.mamchenkov.net)
+ * @copyright     Copyright (c) AlleoChain Ltd. (https://alleochain.com)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-namespace AlexMamchenkov\Multichain\JsonRPC;
+namespace AlleoChain\Multichain\JsonRPC;
 
 use GuzzleHttp\Client as HttpClient;
 
@@ -28,7 +28,7 @@ use GuzzleHttp\Client as HttpClient;
  * Example usage:
  *
  * # Create new instance
- * $instance = new AlexMamchenkov\Multichain\JsonRPC\Client([
+ * $instance = new AlleoChain\Multichain\JsonRPC\Client([
  *   'url'  => 'http://127.0.0.1:7208',
  *   'user'  => 'rpcuser',
  *   'pass'  => 'rpcpass',
