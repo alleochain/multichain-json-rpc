@@ -31,7 +31,7 @@
     },
     "autoload": {
         "psr-4": {
-            "AlexMamchenkov\\Multichain\\": "src"
+            "AlleoChain\\Multichain\\": "src"
         }
     },
     "extra": {

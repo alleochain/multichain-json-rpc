@@ -11,7 +11,7 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-namespace AlexMamchenkov\Multichain\JsonRPC;
+namespace AlleoChain\Multichain\JsonRPC;
 
 use GuzzleHttp\Client as HttpClient;
 
@@ -28,7 +28,7 @@ use GuzzleHttp\Client as HttpClient;
  * Example usage:
  *
  * # Create new instance
- * $instance = new AlexMamchenkov\Multichain\JsonRPC\Client([
+ * $instance = new AlleoChain\Multichain\JsonRPC\Client([
  *   'url'  => 'http://127.0.0.1:7208',
  *   'user'  => 'rpcuser',
  *   'pass'  => 'rpcpass',
