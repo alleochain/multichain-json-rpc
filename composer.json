@@ -14,10 +14,6 @@
             "homepage": "https://alleochain.com"
         }
     ],
-    "support": {
-        "issues": "https://bitbucket.org/alexander_mamchenkov/multichain-jsonrpc/issues",
-        "source": "https://bitbucket.org/alexander_mamchenkov/multichain-jsonrpc/src"
-    },
     "require": {
         "php": ">=7.0",
         "guzzlehttp/guzzle": "~6.0"
