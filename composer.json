@@ -43,5 +43,12 @@
                 "extension.neon"
             ]
         }
+    },
+    "scripts": {
+        "test": [
+            "phpcs",
+            "phpstan analyse",
+            "phpunit"
+        ]
     }
 }
