@@ -70,8 +70,9 @@ class Client
      * Class constructor
      *
      * @param mixed[] $config Initial config
+     * @param \GuzzleHttp\Client|null $httpClient HTTP Client
      */
-    public function __construct(array $config = [])
+    public function __construct(array $config = [], HttpClient $httpClient = null)
     {
         if (empty($config['url'])) {
             throw new \RuntimeException("Missing required config param 'url'");
@@ -79,9 +80,13 @@ class Client
 
         $this->config = array_merge($this->config, $config);
 
-        $this->httpClient = new HttpClient([
-            'auth' => ((!empty($config['user']) && !empty($config['pass'])) ? [$config['user'], $config['pass']] : [])
-        ]);
+        if (null === $httpClient) {
+            $httpClient = new HttpClient([
+                'auth' => ((!empty($config['user']) && !empty($config['pass'])) ? [$config['user'], $config['pass']] : [])
+            ]);
+        }
+
+        $this->httpClient = $httpClient;
     }
 
     /**
