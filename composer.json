@@ -21,12 +21,19 @@
     "require-dev": {
         "phpstan/extension-installer": "*",
         "phpstan/phpstan": "*",
+        "phpstan/phpstan-phpunit": "*",
+        "phpunit/phpunit": "*",
         "squizlabs/php_codesniffer": "*",
         "thecodingmachine/phpstan-strict-rules": "*"
     },
     "autoload": {
         "psr-4": {
             "AlleoChain\\Multichain\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AlleoChain\\Multichain\\Tests\\": "tests"
         }
     },
     "extra": {
