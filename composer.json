@@ -51,6 +51,8 @@
         }
     },
     "scripts": {
+        "post-install-cmd": "cghooks add --no-lock",
+        "post-update-cmd": "cghooks update",
         "test": [
             "phpcs",
             "phpstan analyse",
