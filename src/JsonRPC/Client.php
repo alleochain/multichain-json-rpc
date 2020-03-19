@@ -45,6 +45,16 @@ use GuzzleHttp\Client as HttpClient;
 class Client
 {
     /**
+     * JSON-RPC version.
+     */
+    protected const JSON_RPC_VERSION = '1.0';
+
+    /**
+     * We don't really need help and stop is critical.
+     */
+    protected const PROHIBITED_METHODS = ['help', 'stop'];
+
+    /**
      * @var mixed[] $config Client configuration
      */
     protected $config = [
@@ -53,13 +63,6 @@ class Client
         'pass' => null,
         'chain' => null
     ];
-
-    /**
-     * We don't really need help and stop is critical
-     *
-     * @var string[] $prohibitedMethods List of RPC calls that are not allowed
-     */
-    protected $prohibitedMethods = ['help', 'stop'];
 
     /**
      * @var \GuzzleHttp\Client $httpClient Instance of HTTP Client
@@ -104,13 +107,13 @@ class Client
             throw new \InvalidArgumentException("Method name must be a non empty string");
         }
         // prevent calling prohibited method
-        if (in_array($method, $this->prohibitedMethods, true)) {
+        if (in_array($method, self::PROHIBITED_METHODS, true)) {
             throw new \RuntimeException("Method '$method' is not allowed by API");
         }
 
         // make a payload
         $payload = [
-            'jsonrpc'       => "1.0",
+            'jsonrpc'       => self::JSON_RPC_VERSION,
             'method'        => $method,
             'params'        => $params,
             'id'            => time()
