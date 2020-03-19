@@ -23,7 +23,8 @@ use PHPUnit\Framework\TestCase;
 
 final class ClientTest extends TestCase
 {
-    private const FIXTURES_PATH = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR;
+    private const FIXTURES_PATH = __DIR__ . DIRECTORY_SEPARATOR . '..' .
+        DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR;
 
     /**
      * @var \AlleoChain\Multichain\JsonRPC\Client
@@ -134,7 +135,7 @@ final class ClientTest extends TestCase
 
         $this->mockHandler->append(new \InvalidArgumentException($errorMessage));
 
-       $this->client->getinfo();
+        $this->client->getinfo();
     }
 
     public function testRequestExceptionWithResponse(): void
@@ -147,6 +148,6 @@ final class ClientTest extends TestCase
             new Response(500, [], $errorMessage)
         ));
 
-       $this->assertSame(json_decode($errorMessage, true), $this->client->getinfo());
+        $this->assertSame(json_decode($errorMessage, true), $this->client->getinfo());
     }
 }

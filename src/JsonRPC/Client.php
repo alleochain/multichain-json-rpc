@@ -82,7 +82,7 @@ class Client
 
         if (null === $httpClient) {
             $httpClient = new HttpClient([
-                'auth' => ((!empty($config['user']) && !empty($config['pass'])) ? [$config['user'], $config['pass']] : [])
+                'auth' => !empty($config['user']) && !empty($config['pass']) ? [$config['user'], $config['pass']] : []
             ]);
         }
 
