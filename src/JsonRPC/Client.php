@@ -41,6 +41,7 @@ use GuzzleHttp\Client as HttpClient;
  * # For MultiChain streams
  * print_r($instance->liststreamitems('test_stream'))
  *
+ * @method \Psr\Http\Message\ResponseInterface getinfo()
  */
 class Client
 {
