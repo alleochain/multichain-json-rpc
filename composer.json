@@ -19,8 +19,10 @@
         "guzzlehttp/guzzle": "~6.0"
     },
     "require-dev": {
+        "brainmaestro/composer-git-hooks": "*",
         "phpstan/extension-installer": "*",
         "phpstan/phpstan": "*",
+        "phpstan/phpstan-deprecation-rules": "*",
         "phpstan/phpstan-phpunit": "*",
         "phpunit/phpunit": "*",
         "squizlabs/php_codesniffer": "*",
@@ -37,10 +39,24 @@
         }
     },
     "extra": {
+        "hooks": {
+            "pre-commit": [
+                "composer test"
+            ]
+        },
         "phpstan": {
             "includes": [
                 "extension.neon"
             ]
         }
+    },
+    "scripts": {
+        "post-install-cmd": "cghooks add --no-lock",
+        "post-update-cmd": "cghooks update",
+        "test": [
+            "phpcs",
+            "phpstan analyse",
+            "phpunit"
+        ]
     }
 }
