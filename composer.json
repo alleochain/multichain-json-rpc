@@ -43,11 +43,6 @@
             "pre-commit": [
                 "composer test"
             ]
-        },
-        "phpstan": {
-            "includes": [
-                "extension.neon"
-            ]
         }
     },
     "scripts": {
