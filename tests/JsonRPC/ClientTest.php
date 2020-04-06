@@ -14,11 +14,7 @@
 namespace AlleoChain\Multichain\Tests\JsonRPC;
 
 use AlleoChain\Multichain\JsonRPC\Client;
-use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
+use AlleoChain\Multichain\JsonRPC\HttpClientInterface;
 use PHPUnit\Framework\TestCase;
 
 final class ClientTest extends TestCase
@@ -27,37 +23,58 @@ final class ClientTest extends TestCase
         DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR;
 
     /**
-     * @var \AlleoChain\Multichain\JsonRPC\Client
+     * @var Client
      */
     private $client;
 
     /**
-     * @var \GuzzleHttp\Handler\MockHandler
+     * @var HttpClientInterface&\PHPUnit\Framework\MockObject\Stub
      */
-    private $mockHandler;
+    private $httpClient;
 
     protected function setUp(): void
     {
-        $this->mockHandler = new MockHandler();
-
-        $httpClient = new HttpClient(['handler' => $this->mockHandler]);
-
-        $this->client = new Client(['url' => 'http://localhost:8000', 'chain' => 'test'], $httpClient);
+        $this->httpClient = $this->createStub(HttpClientInterface::class);
+        $this->client = new Client(['url' => 'http://localhost:8000', 'chain' => 'test'], $this->httpClient);
     }
 
     protected function tearDown(): void
     {
+        unset($this->httpClient);
         unset($this->client);
-        unset($this->mockHandler);
     }
 
+    public function testValidResponse(): void
+    {
+        $id = 123;
+        $data = (string)file_get_contents(self::FIXTURES_PATH . 'getinfo.json');
+
+        $this->client->setId($id);
+
+        $this->httpClient->method('execute')
+             ->willReturn($data);
+
+        $expected = json_decode($data, true);
+        $expected['id'] = $id;
+
+        $this->assertSame($expected, $this->client->getinfo());
+    }
     public function testInstantiationShouldThrowExceptionWithoutUrl(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\AlleoChain\Multichain\JsonRPC\InvalidArgumentException::class);
         $this->expectExceptionCode(0);
-        $this->expectExceptionMessage('Missing required config param \'url\'');
+        $this->expectExceptionMessage('Parameter "url" is required');
 
-        $client = new Client();
+        $client = new Client([]);
+    }
+
+    public function testInstantiationShouldThrowExceptionWithEmptyUrl(): void
+    {
+        $this->expectException(\AlleoChain\Multichain\JsonRPC\InvalidArgumentException::class);
+        $this->expectExceptionCode(0);
+        $this->expectExceptionMessage('Parameter "url" must be a non-empty string');
+
+        $client = new Client(['url' => '']);
     }
 
     public function testInstantiationWithoutClient(): void
@@ -69,35 +86,20 @@ final class ClientTest extends TestCase
 
     public function testShouldThrowExceptionWithEmptyMethodName(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(\AlleoChain\Multichain\JsonRPC\PayloadException::class);
         $this->expectExceptionCode(0);
-        $this->expectExceptionMessage('Method name must be a non empty string');
+        $this->expectExceptionMessage('Method name must be a non-empty string');
 
-        $this->client->{''}();
+        $this->client->exec('');
     }
 
-    /**
-     * @dataProvider validMethodsDataProvider
-     * @param string $method Method name
-     * @return void
-     */
-    public function testValidMethods(string $method): void
+    public function testShouldThrowExceptionWithJsonUnencodedPayload(): void
     {
-        $data = (string)file_get_contents(self::FIXTURES_PATH . $method . '.json');
+        $this->expectException(\AlleoChain\Multichain\JsonRPC\PayloadException::class);
+        $this->expectExceptionCode(0);
+        $this->expectExceptionMessage('Malformed UTF-8 characters, possibly incorrectly encoded');
 
-        $this->mockHandler->append(new Response(200, [], $data));
-
-        $this->assertSame(json_decode($data, true), $this->client->{$method}());
-    }
-
-    /**
-     * @return array<array<string>>
-     */
-    public function validMethodsDataProvider(): array
-    {
-        return [
-            ['getinfo'],
-        ];
+        $this->client->getinfo([utf8_decode('ü')]);
     }
 
     /**
@@ -107,9 +109,9 @@ final class ClientTest extends TestCase
      */
     public function testShouldThrowExceptionWithForbiddenMethods(string $method): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(\AlleoChain\Multichain\JsonRPC\PayloadException::class);
         $this->expectExceptionCode(0);
-        $this->expectExceptionMessage(sprintf('Method \'%s\' is not allowed by API', $method));
+        $this->expectExceptionMessage(sprintf('"%s" method is prohibited', $method));
 
         $this->client->{$method}();
     }
@@ -125,29 +127,15 @@ final class ClientTest extends TestCase
         ];
     }
 
-    public function testRequestException(): void
+    public function testShouldThrowExecptionWithFalseResponse(): void
     {
-        $errorMessage = 'Error Communicating with Server';
-
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(\AlleoChain\Multichain\JsonRPC\NetworkException::class);
         $this->expectExceptionCode(0);
-        $this->expectExceptionMessage($errorMessage);
+        $this->expectExceptionMessage('0: ');
 
-        $this->mockHandler->append(new \InvalidArgumentException($errorMessage));
+        $this->httpClient->method('execute')
+            ->willReturn(false);
 
         $this->client->getinfo();
-    }
-
-    public function testRequestExceptionWithResponse(): void
-    {
-        $errorMessage = '{"message": "Error Communicating with Server"}';
-
-        $this->mockHandler->append(new RequestException(
-            $errorMessage,
-            new Request('GET', 'test'),
-            new Response(500, [], $errorMessage)
-        ));
-
-        $this->assertSame(json_decode($errorMessage, true), $this->client->getinfo());
     }
 }
