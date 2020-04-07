@@ -2,6 +2,9 @@
 <phpunit
     colors="true"
     verbose="true"
+    beStrictAboutChangesToGlobalState="true"
+    beStrictAboutOutputDuringTests="true"
+    bootstrap="tests/bootstrap.php"
     >
 
     <logging>
@@ -10,7 +13,7 @@
     </logging>
 
     <testsuites>
-        <testsuite name="unit">
+        <testsuite name="Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

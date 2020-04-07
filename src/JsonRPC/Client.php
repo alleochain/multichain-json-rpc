@@ -41,20 +41,10 @@ use GuzzleHttp\Client as HttpClient;
  * # For MultiChain streams
  * print_r($instance->liststreamitems('test_stream'))
  *
- * @method \Psr\Http\Message\ResponseInterface getinfo()
+ * @method \Psr\Http\Message\ResponseInterface getinfo(array $params = [])
  */
-class Client
+final class Client implements ClientInterface
 {
-    /**
-     * JSON-RPC version.
-     */
-    protected const JSON_RPC_VERSION = '1.0';
-
-    /**
-     * We don't really need help and stop is critical.
-     */
-    protected const PROHIBITED_METHODS = ['help', 'stop'];
-
     /**
      * @var mixed[] $config Client configuration
      */
@@ -62,100 +52,125 @@ class Client
         'url' => null,
         'user' => null,
         'pass' => null,
-        'chain' => null
     ];
 
     /**
-     * @var \GuzzleHttp\Client $httpClient Instance of HTTP Client
+     * @var HttpClientInterface
      */
     protected $httpClient;
 
     /**
-     * Class constructor
-     *
-     * @param mixed[] $config Initial config
-     * @param \GuzzleHttp\Client|null $httpClient HTTP Client
+     * @var array<int, string>
      */
-    public function __construct(array $config = [], HttpClient $httpClient = null)
+    private $headers = [
+        'Accept: application/json',
+        'Content-Type: application/json',
+        'Connection: close',
+    ];
+
+    /**
+     * @var mixed|null
+     */
+    private $id = null;
+
+    /**
+     * @param array<string, string> $config
+     */
+    public function __construct(array $config, HttpClientInterface $httpClient = null)
     {
-        if (empty($config['url'])) {
-            throw new \RuntimeException("Missing required config param 'url'");
-        }
+        $this->validateConfig($config);
 
         $this->config = array_merge($this->config, $config);
 
+        if (array_key_exists('user', $this->config) && array_key_exists('pass', $this->config)) {
+            $auth = base64_encode($this->config['user'] . ':' . $this->config['pass']);
+            $this->headers[] = 'Authorization: Basic ' . $auth;
+        }
+
         if (null === $httpClient) {
-            $httpClient = new HttpClient([
-                'auth' => !empty($config['user']) && !empty($config['pass']) ? [$config['user'], $config['pass']] : []
-            ]);
+            $httpClient = new Curl($this->config['url']);
         }
 
         $this->httpClient = $httpClient;
     }
 
     /**
-     * Exec API method with given params
-     *
-     * @param string $method API method name
-     * @param mixed[] $params API method call params
-     *
-     * @return mixed[] parsed response body
+     * @param array<string, string> $config
+     * @throws InvalidArgumentException
      */
+    private function validateConfig(array $config): void
+    {
+        if (! array_key_exists('url', $config)) {
+            throw new InvalidArgumentException('Parameter "url" is required');
+        }
+
+        if (! is_string($config['url']) || '' === trim($config['url'])) {
+            throw new InvalidArgumentException('Parameter "url" must be a non-empty string');
+        }
+    }
+
+    public function setId($id): void
+    {
+        $this->id = $id;
+    }
+
     public function exec(string $method, array $params = []): array
     {
-        // non-empty method required
-        if (empty($method)) {
-            throw new \InvalidArgumentException("Method name must be a non empty string");
+        if ('' === trim($method)) {
+            throw new PayloadException('Method name must be a non-empty string');
         }
-        // prevent calling prohibited method
+
         if (in_array($method, self::PROHIBITED_METHODS, true)) {
-            throw new \RuntimeException("Method '$method' is not allowed by API");
+            throw new PayloadException(sprintf('"%s" method is prohibited', $method));
         }
 
-        // make a payload
-        $payload = [
-            'jsonrpc'       => self::JSON_RPC_VERSION,
-            'method'        => $method,
-            'params'        => $params,
-            'id'            => time()
-        ];
+        $this->httpClient->setOption(CURLOPT_POSTFIELDS, $this->payload($method, $params));
+        $this->httpClient->setOption(CURLOPT_HTTPHEADER, $this->headers);
+        $this->httpClient->setOption(CURLOPT_RETURNTRANSFER, true);
 
-        // add a chain name if we have one
-        if (!empty($this->config['chain'])) {
-            $payload['chain_name'] = $this->config['chain'];
+        /** @var string|false */
+        $result = $this->httpClient->execute();
+
+        if (false === $result) {
+            throw new NetworkException(
+                sprintf('%d: %s', $this->httpClient->errorCode(), $this->httpClient->errorMessage())
+            );
         }
 
-        try {
-            // try to make a request to API
-            $response = $this->httpClient->post($this->config['url'], ['json' => $payload]);
-        } catch (\Exception $e) {
-            if (is_callable([$e, 'getResponse'])) {
-                // Try to parse JSON from the response with error
-                $body = json_decode($e->getResponse()->getBody(true), true);
+        $this->httpClient->close();
 
-                // just return JSON if managed to parse correctly
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    return $body;
-                }
-            }
+        $result = json_decode($result, true);
+        $result['id'] = $this->id;
 
-            // otherwise throw the exception we have as it is probably Client/configuration
-            // issue of HttpClient, not the server side
-            throw $e;
-        }
-
-        // under normal execution return decoded JSON body as an array
-        return json_decode((string)$response->getBody(), true);
+        return $result;
     }
 
     /**
-     * Magic __call that will allow to call API method directly
-     * by their names
+     * @param array<int, mixed> $params
+     */
+    private function payload(string $method, array $params): string
+    {
+        $payload = [
+            'jsonrpc' => self::VERSION,
+            'method' => $method,
+            'params' => $params,
+            'id'  => $this->id
+        ];
+
+        try {
+            $result = json_encode($payload, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new PayloadException($e->getMessage(), 0, $e);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Magic __call that will allow to call API method directly by their names
      *
-     * @param string $method Method name that was called
-     * @param mixed[] $args Arguments passed to the method
-     *
-     * @return mixed[] parsed response body
+     * @param mixed[] $args
+     * @return mixed[]
      */
     public function __call(string $method, array $args): array
     {
