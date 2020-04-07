@@ -52,7 +52,6 @@ final class Client implements ClientInterface
         'url' => null,
         'user' => null,
         'pass' => null,
-        'chain' => null
     ];
 
     /**
@@ -157,10 +156,6 @@ final class Client implements ClientInterface
             'params' => $params,
             'id'  => $this->id
         ];
-
-        if (array_key_exists('chain', $this->config) && is_string($this->config['chain'])) {
-            $payload['chain_name'] = $this->config['chain'];
-        }
 
         try {
             $result = json_encode($payload, JSON_THROW_ON_ERROR);
