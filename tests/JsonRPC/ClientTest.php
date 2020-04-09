@@ -99,7 +99,7 @@ final class ClientTest extends TestCase
         $this->expectExceptionCode(0);
         $this->expectExceptionMessage('Malformed UTF-8 characters, possibly incorrectly encoded');
 
-        $this->client->getinfo([utf8_decode('ü')]);
+        $this->client->getblockchainparams([utf8_decode('ü')]);
     }
 
     /**
