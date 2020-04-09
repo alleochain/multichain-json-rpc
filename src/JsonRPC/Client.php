@@ -41,7 +41,14 @@ use GuzzleHttp\Client as HttpClient;
  * # For MultiChain streams
  * print_r($instance->liststreamitems('test_stream'))
  *
- * @method \Psr\Http\Message\ResponseInterface getinfo(array $params = [])
+ * @method array getinfo()
+ * @method array getblockchainparams(array $params)
+ * @method array listaccounts()
+ * @method array getnewaddress(array $params)
+ * @method array getaccountaddress(array $params)
+ * @method array getaddressesbyaccount(array $params)
+ * @method array getbalance(array $params)
+ * @method array validateaddress(array $params)
  */
 final class Client implements ClientInterface
 {
