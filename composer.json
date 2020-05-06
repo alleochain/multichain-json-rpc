@@ -19,12 +19,21 @@
     },
     "require-dev": {
         "brainmaestro/composer-git-hooks": "*",
+        "friendsofphp/php-cs-fixer": "*",
+        "icanhazstring/composer-unused": "*",
+        "maglnet/composer-require-checker": "*",
+        "phpmd/phpmd": "*",
+        "phpmetrics/phpmetrics": "*",
         "phpstan/extension-installer": "*",
         "phpstan/phpstan": "*",
         "phpstan/phpstan-deprecation-rules": "*",
         "phpstan/phpstan-phpunit": "*",
         "phpunit/phpunit": "*",
+        "pyrech/composer-changelogs": "*",
+        "roave/backward-compatibility-check": "*",
+        "roave/security-advisories": "dev-master",
         "squizlabs/php_codesniffer": "*",
+        "symfony/var-dumper": "*",
         "thecodingmachine/phpstan-strict-rules": "*"
     },
     "autoload": {
@@ -49,8 +58,15 @@
         "post-update-cmd": "cghooks update",
         "test": [
             "phpcs",
-            "phpstan analyse",
-            "phpunit"
+            "phpstan analyse --memory-limit=-1",
+            "phpunit --colors=always --no-coverage"
+        ],
+        "report": [
+            "phpmetrics --config=phpmetrics.dist.json src",
+            "phpmd src html ruleset.xml.dist --report-file build/phpmd.html --ignore-violations-on-exit",
+            "composer-unused",
+            "composer-require-checker",
+            "phpunit --colors=always"
         ]
     }
 }

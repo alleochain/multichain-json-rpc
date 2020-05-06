@@ -21,13 +21,11 @@ interface HttpClientInterface
     public function setOption(int $option, $value): bool;
 
     /**
-     * @return mixed
+     * @return bool|string
      */
     public function execute();
 
     public function errorCode(): int;
 
     public function errorMessage(): string;
-
-    public function close(): void;
 }

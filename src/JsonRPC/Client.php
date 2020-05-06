@@ -140,11 +140,10 @@ final class Client implements ClientInterface
 
         if (false === $result) {
             throw new NetworkException(
-                sprintf('%d: %s', $this->httpClient->errorCode(), $this->httpClient->errorMessage())
+                sprintf('%d: %s', $this->httpClient->errorCode(), $this->httpClient->errorMessage()),
+                -32000
             );
         }
-
-        $this->httpClient->close();
 
         $result = json_decode($result, true);
         $result['id'] = $this->id;
