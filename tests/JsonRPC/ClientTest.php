@@ -130,7 +130,7 @@ final class ClientTest extends TestCase
     public function testShouldThrowExecptionWithFalseResponse(): void
     {
         $this->expectException(\AlleoChain\Multichain\JsonRPC\NetworkException::class);
-        $this->expectExceptionCode(0);
+        $this->expectExceptionCode(-32000);
         $this->expectExceptionMessage('0: ');
 
         $this->httpClient->method('execute')

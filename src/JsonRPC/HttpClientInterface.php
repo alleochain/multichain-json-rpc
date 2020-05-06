@@ -21,7 +21,7 @@ interface HttpClientInterface
     public function setOption(int $option, $value): bool;
 
     /**
-     * @return mixed
+     * @return bool|string
      */
     public function execute();
 
