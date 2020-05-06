@@ -144,8 +144,6 @@ final class Client implements ClientInterface
             );
         }
 
-        $this->httpClient->close();
-
         $result = json_decode($result, true);
         $result['id'] = $this->id;
 

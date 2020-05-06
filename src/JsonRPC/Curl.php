@@ -50,7 +50,7 @@ class Curl implements HttpClientInterface
         return curl_error($this->handle);
     }
 
-    public function close(): void
+    public function __destruct()
     {
         curl_close($this->handle);
     }

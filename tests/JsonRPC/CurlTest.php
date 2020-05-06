@@ -53,12 +53,4 @@ final class CurlTest extends TestCase
     {
         $this->assertSame('', $this->curl->errorMessage());
     }
-
-    /**
-     * @doesNotPerformAssertions
-     */
-    public function testClose(): void
-    {
-        $this->curl->close();
-    }
 }

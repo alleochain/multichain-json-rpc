@@ -28,6 +28,4 @@ interface HttpClientInterface
     public function errorCode(): int;
 
     public function errorMessage(): string;
-
-    public function close(): void;
 }
