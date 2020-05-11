@@ -76,7 +76,7 @@ final class Client implements ClientInterface
     ];
 
     /**
-     * @var mixed|null
+     * @var int|string|null
      */
     private $id = null;
 
