@@ -124,7 +124,7 @@ final class Client implements ClientInterface
     public function exec(string $method, array $params = []): array
     {
         if (in_array($method, self::PROHIBITED_METHODS, true)) {
-            throw new PayloadException(sprintf('"%s" method is prohibited', $method));
+            throw new PayloadException(sprintf('"%s" method is prohibited', $method), -701);
         }
 
         $this->httpClient->setOption(CURLOPT_POSTFIELDS, $this->payload($method, $params));

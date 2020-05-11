@@ -101,7 +101,7 @@ final class ClientTest extends TestCase
     public function testShouldThrowExceptionWithForbiddenMethods(string $method): void
     {
         $this->expectException(\AlleoChain\Multichain\JsonRPC\PayloadException::class);
-        $this->expectExceptionCode(0);
+        $this->expectExceptionCode(-701);
         $this->expectExceptionMessage(sprintf('"%s" method is prohibited', $method));
 
         $this->client->{$method}();
