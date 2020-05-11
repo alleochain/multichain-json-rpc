@@ -84,15 +84,6 @@ final class ClientTest extends TestCase
         $this->assertInstanceOf(Client::class, $client);
     }
 
-    public function testShouldThrowExceptionWithEmptyMethodName(): void
-    {
-        $this->expectException(\AlleoChain\Multichain\JsonRPC\PayloadException::class);
-        $this->expectExceptionCode(0);
-        $this->expectExceptionMessage('Method name must be a non-empty string');
-
-        $this->client->exec('');
-    }
-
     public function testShouldThrowExceptionWithJsonUnencodedPayload(): void
     {
         $this->expectException(\AlleoChain\Multichain\JsonRPC\PayloadException::class);

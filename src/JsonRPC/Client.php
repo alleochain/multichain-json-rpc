@@ -123,10 +123,6 @@ final class Client implements ClientInterface
 
     public function exec(string $method, array $params = []): array
     {
-        if ('' === trim($method)) {
-            throw new PayloadException('Method name must be a non-empty string');
-        }
-
         if (in_array($method, self::PROHIBITED_METHODS, true)) {
             throw new PayloadException(sprintf('"%s" method is prohibited', $method));
         }
