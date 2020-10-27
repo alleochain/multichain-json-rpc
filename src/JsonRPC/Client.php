@@ -50,6 +50,7 @@ use GuzzleHttp\Client as HttpClient;
  * @method array listaccounts()
  * @method array listtransactions(array $params = [])
  * @method array setaccount(string $address, string $account)
+ * @method array sendfrom(string $account, string $address, string $amount)
  * @method array validateaddress(array $params)
  */
 final class Client implements ClientInterface
