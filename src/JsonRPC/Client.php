@@ -13,8 +13,6 @@
 
 namespace AlleoChain\Multichain\JsonRPC;
 
-use GuzzleHttp\Client as HttpClient;
-
 /**
  * Multichain JsonRPC Client class allows to interact with a JSON RPC blockchain APIs
  * by sending the commands and getting back response arrays of data.
