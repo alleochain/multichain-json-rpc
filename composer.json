@@ -57,9 +57,14 @@
         "post-install-cmd": "cghooks add --no-lock",
         "post-update-cmd": "cghooks update",
         "test": [
+            "composer validate --strict",
             "phpcs",
+            "php-cs-fixer fix -v --dry-run --stop-on-violation --using-cache=no --rules=no_unused_imports src/",
+            "php-cs-fixer fix -v --dry-run --stop-on-violation --using-cache=no --rules=no_unused_imports tests/",
+            "composer unused",
+            "composer-require-checker check",
             "phpstan analyse --memory-limit=-1",
-            "phpunit --colors=always --no-coverage"
+            "phpunit --colors=always"
         ],
         "report": [
             "phpmetrics --config=phpmetrics.dist.json src",
